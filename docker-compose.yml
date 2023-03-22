@@ -9,10 +9,8 @@ services:
       - "443"
     volumes:
       - ./:/var/www/project
-      - ./docker/web/site.conf:/etc/nginx/conf.d/default.conf
     environment:
       VIRTUAL_HOST: ${HOST}
-        #      HTTPS_METHOD: redirect
       VIRTUAL_PORT: 443
       LETSENCRYPT_HOST: ${HOST}
     depends_on:
@@ -24,13 +22,21 @@ services:
     build:
       dockerfile: docker/php/Dockerfile
       context: .
+      args:
+        - NEWRELIC_LICENSE_KEY=${NEWRELIC_LICENSE_KEY}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME}
+        - NEWRELIC_DAEMON_ADDRESS=newrelic-daemon:31339
     volumes:
       - ./:/var/www/project
     networks:
       - internal
+      - newrelic
 
 networks:
   internal:
   nginx-proxy:
     external:
       name: nginx-proxy
+  newrelic:
+    external:
+      name: newrelic
