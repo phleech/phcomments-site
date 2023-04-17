@@ -1,7 +1,7 @@
 <?php
 
 require __DIR__.'/../vendor/autoload.php';
-use App\Parser;
+use PHComments\Parser;
 
 $parser = new Parser();
 $comments = $parser->randomVideo()->getComments();

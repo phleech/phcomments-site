@@ -1,18 +1,5 @@
 {
-    "name": "phleech/phcomments",
-    "autoload": {
-        "psr-4": {
-            "App\\": "app/",
-            "Tests\\": "tests/"
-        }
-    },
     "require": {
-        "symfony/browser-kit": "^6.2",
-        "symfony/http-client": "^6.2",
-        "symfony/css-selector": "^6.2"
-    },
-    "require-dev": {
-        "laravel/pint": "^1.8",
-        "phpunit/phpunit": "^10.0"
+        "phleech/phcomments": "^1.0"
     }
 }
