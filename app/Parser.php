@@ -2,63 +2,71 @@
 
 namespace App;
 
-use App\Comment;
-use Goutte\Client;
+use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 
 class Parser
 {
-    const URL = 'https://www.pornhub.com/video/random';
+    private const COMMENT_DOM_LOCATION = 'div#cmtWrapper > div#cmtContent > div.commentBlock > div.topCommentBlock';
 
-    const COMMENT_DOM_LOCATION = 'div#cmtWrapper > div#cmtContent > div.commentBlock > div.topCommentBlock';
-    const BODY_DOM_LOCATION = 'div.commentMessage > span';
-    const TIMESTAMP_DOM_LOCATION = 'div.userWrap > div.date';
-    const AUTHOR_DOM_LOCATION = 'div.userWrap > div.usernameWrap .usernameLink';
-    const VOTES_DOM_LOCATION = 'div.commentMessage > div.actionButtonsBlock > span.voteTotal';
+    private const BODY_DOM_LOCATION = 'div.commentMessage > span';
 
-    const DEFAULT_STRIP_NON_ALPHA_CHARS = true;
-    const DEFAULT_MAX_ATTEMPTS = 10;
+    private const TIMESTAMP_DOM_LOCATION = 'div.userWrap > div.date';
 
-    private Client $client;
-    private bool $stripNonAlphaChars;
-    private int $maxRetryAttempts;
-    private int $maxCommentBodyLength;
-    private int $maxCommentAuthorLength;
-    private array $comments;
+    private const AUTHOR_DOM_LOCATION = 'div.userWrap > div.usernameWrap .usernameLink';
+
+    private const VOTES_DOM_LOCATION = 'div.commentMessage > div.actionButtonsBlock > span.voteTotal';
+
+    private array $comments = [];
 
     public function __construct(
-        $stripNonAlphaChars = self::DEFAULT_STRIP_NON_ALPHA_CHARS,
-        $maxRetryAttempts = self::DEFAULT_MAX_ATTEMPTS,
-        $maxCommentBodyLength = Comment::DEFAULT_MAX_BODY_LENGTH,
-        $maxCommentAuthorLength = Comment::DEFAULT_MAX_AUTHOR_LENGTH
+        private int $maxCommentBodyLength = Comment::DEFAULT_MAX_BODY_LENGTH,
+        private int $maxCommentAuthorLength = Comment::DEFAULT_MAX_AUTHOR_LENGTH,
+        private HttpBrowser $httpBrowser = new HttpBrowser(),
+        private Page $page = new Page()
     ) {
-        $this->client = new Client();
-        $this->stripNonAlphaChars = $stripNonAlphaChars;
-        $this->maxRetryAttempts = $maxRetryAttempts;
-        $this->maxCommentBodyLength = $maxCommentBodyLength;
-        $this->maxCommentAuthorLength = $maxCommentAuthorLength;
-
-        $this->parse();
     }
 
-    private function parse()
+    public function randomVideo(): self
     {
-        $attemptCounter = 0;
-        do {
-            $crawler = $this->makeRequest();
-            $this->comments = $crawler->filter(self::COMMENT_DOM_LOCATION)->each(function ($node) {
-                return new Comment([
-                    Comment::ATTRIBUTE_BODY => $node->filter(self::BODY_DOM_LOCATION)->text(),
-                    Comment::ATTRIBUTE_TIMESTAMP => $node->filter(self::TIMESTAMP_DOM_LOCATION)->text(),
-                    Comment::ATTRIBUTE_AUTHOR => $node->filter(self::AUTHOR_DOM_LOCATION)->text(),
-                    Comment::ATTRIBUTE_VOTES => $node->filter(self::VOTES_DOM_LOCATION)->text()
-                ]);
-            });
-        } while ($attemptCounter++ < $this->maxRetryAttempts && empty($this->comments));
+        $this->page->randomVideo();
+
+        return $this;
+    }
+
+    public function setViewKey(string $viewKey): self
+    {
+        $this->page->setViewKey($viewKey);
+
+        return $this;
+    }
+
+    public function setPageUrl(string $url): self
+    {
+        $this->page->setPageUrl($url);
+
+        return $this;
+    }
+
+    private function parse(): void
+    {
+        $crawler = $this->makeRequest();
+        $this->comments = $crawler->filter(self::COMMENT_DOM_LOCATION)->each(function (Crawler $node) {
+            return new Comment(
+                body: $node->filter(self::BODY_DOM_LOCATION)->text(),
+                timestamp: $node->filter(self::TIMESTAMP_DOM_LOCATION)->text(),
+                author: $node->filter(self::AUTHOR_DOM_LOCATION)->text(),
+                votes: $node->filter(self::VOTES_DOM_LOCATION)->text()
+            );
+        });
 
         $this->filterMaxCommentBodyLength();
         $this->filterMaxCommentAuthorLength();
-        $this->filterAlphaChars();
+    }
+
+    private function makeRequest(): Crawler
+    {
+        return $this->httpBrowser->request('GET', $this->page->getUrl());
     }
 
     private function filterMaxCommentBodyLength(): void
@@ -79,31 +87,12 @@ class Parser
         );
     }
 
-    private function filterAlphaChars(): void
+    public function getComments(bool $parse = true): array
     {
-        if (!$this->stripNonAlphaChars) {
-            return;
+        if ($parse) {
+            $this->parse();
         }
 
-        $this->comments = array_map(function (Comment $comment) {
-            $comment->setAuthor(
-                preg_replace("/[^A-Za-z0-9 !?'.,\/\$£:;]/", '', $comment->getAuthor())
-            );
-
-            $comment->setBody(
-                preg_replace("/[^A-Za-z0-9 !?'.,\/\$£:;]/", '', $comment->getBody())
-            );
-            return $comment;
-        }, $this->comments);
-    }
-
-    private function makeRequest(): Crawler
-    {
-        return $this->client->request('GET', self::URL);
-    }
-
-    public function getComments(): array
-    {
         return $this->comments;
     }
 
