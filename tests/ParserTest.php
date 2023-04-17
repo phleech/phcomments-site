@@ -204,6 +204,19 @@ final class ParserTest extends TestCase
         $this->assertEquals([$validComment], $parser->getComments());
     }
 
+    public function testHTMLParse(): void
+    {
+		    $crawler = new Crawler(file_get_contents(__DIR__ . '/comment.html'));
+
+        $httpBrowser = $this->createStub(HttpBrowser::class);
+        $httpBrowser->method('request')->willReturn($crawler);
+
+        $page = $this->createMock(Page::class);
+        $parser = new Parser(page: $page, httpBrowser: $httpBrowser, maxCommentAuthorLength: 15);
+
+        $this->assertCount(8, $parser->getComments());
+    }
+
     public function testDefaultMaxCommentAuthorLengthIsUsedIfNoneIsSuppliedToParserConstructor(): void
     {
         $page = $this->createMock(Page::class);
