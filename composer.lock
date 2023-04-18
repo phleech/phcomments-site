@@ -81,12 +81,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phleech/phcomments.git",
-                "reference": "5f21028c17c2103c031d6fcf46d9fc770857911b"
+                "reference": "ccb4e983e02d037b0e9e6e4e850f000b270c6ec5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phleech/phcomments/zipball/5f21028c17c2103c031d6fcf46d9fc770857911b",
-                "reference": "5f21028c17c2103c031d6fcf46d9fc770857911b",
+                "url": "https://api.github.com/repos/phleech/phcomments/zipball/ccb4e983e02d037b0e9e6e4e850f000b270c6ec5",
+                "reference": "ccb4e983e02d037b0e9e6e4e850f000b270c6ec5",
                 "shasum": ""
             },
             "require": {
@@ -120,7 +120,7 @@
                 "issues": "https://github.com/phleech/phcomments/issues",
                 "source": "https://github.com/phleech/phcomments/tree/v1.0.0"
             },
-            "time": "2023-04-18T00:38:33+00:00"
+            "time": "2023-04-18T19:41:41+00:00"
         },
         {
             "name": "psr/container",
