@@ -77,16 +77,16 @@
         },
         {
             "name": "phleech/phcomments",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phleech/phcomments.git",
-                "reference": "ccb4e983e02d037b0e9e6e4e850f000b270c6ec5"
+                "reference": "4e7bad9e0be52f1096bafe4c7150e87981189409"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phleech/phcomments/zipball/ccb4e983e02d037b0e9e6e4e850f000b270c6ec5",
-                "reference": "ccb4e983e02d037b0e9e6e4e850f000b270c6ec5",
+                "url": "https://api.github.com/repos/phleech/phcomments/zipball/4e7bad9e0be52f1096bafe4c7150e87981189409",
+                "reference": "4e7bad9e0be52f1096bafe4c7150e87981189409",
                 "shasum": ""
             },
             "require": {
@@ -118,9 +118,9 @@
             "description": "Retrieve video comments from PornHub",
             "support": {
                 "issues": "https://github.com/phleech/phcomments/issues",
-                "source": "https://github.com/phleech/phcomments/tree/v1.0.0"
+                "source": "https://github.com/phleech/phcomments/tree/v1.0.1"
             },
-            "time": "2023-04-18T19:41:41+00:00"
+            "time": "2023-07-19T18:24:36+00:00"
         },
         {
             "name": "psr/container",
