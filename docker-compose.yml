@@ -2,6 +2,7 @@ version: '3'
 
 services:
   web:
+    restart: unless-stopped
     build:
       dockerfile: docker/web/Dockerfile
       context: .
@@ -19,6 +20,7 @@ services:
       - internal
       - nginx-proxy
   php:
+    restart: unless-stopped
     build:
       dockerfile: docker/php/Dockerfile
       context: .
