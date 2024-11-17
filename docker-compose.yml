@@ -37,8 +37,8 @@ services:
 networks:
   internal:
   nginx-proxy:
-    external:
-      name: nginx-proxy
+    name: nginx-proxy
+    external: true
   newrelic:
-    external:
-      name: newrelic
+    name: newrelic
+    external: true
