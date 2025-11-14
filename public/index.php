@@ -3,7 +3,7 @@
 require __DIR__.'/../vendor/autoload.php';
 use PHComments\Parser;
 
-$parser = new Parser();
+$parser = new Parser;
 $comments = $parser->randomVideo()->getComments();
 $response = json_encode($comments);
 
