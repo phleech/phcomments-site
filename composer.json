@@ -5,14 +5,14 @@
             "App\\": "app/"
         }
     },
-    "require": {
-        "vlucas/phpdotenv": "^5.5",
-        "phleech/phcomments": "^1.0"
-    },
     "config": {
     },
+    "require": {
+        "vlucas/phpdotenv": "^5.7",
+        "phleech/phcomments": "^1.0"
+    },
     "require-dev": {
-        "laravel/pint": "^1.25",
-        "phpunit/phpunit": "^12.4"
+        "phpunit/phpunit": "^13.4",
+        "laravel/pint": "^1.32"
     }
 }
